@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>EBXU | SMS SPAM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header><h1>SMS<span>SPAM</span></h1></header>
+        <div class="card">
+            <div class="input-group">
+                <label>Nomor Target (+62...)</label>
+                <input type="text" id="target" placeholder="+628123456789">
+            </div>
+            <div class="input-group">
+                <label>Jumlah Spam</label>
+                <input type="number" id="count" value="10">
+            </div>
+            <button class="btn" onclick="runSpam()">LAUNCH ATTACK</button>
+        </div>
+        <div class="terminal" id="term">
+            <div class="log">[*] System ready for bombing...</div>
+        </div>
+        <a href="index.html" class="back-link">← BACK TO HUB</a>
+    </div>
+    <script>
+        function runSpam() {
+            let t = document.getElementById('target').value;
+            let log = document.getElementById('term');
+            if(!t) return;
+            log.innerHTML += `<div class='log info'>[>] Initializing API bypass for ${t}...</div>`;
+            setTimeout(() => {
+                log.innerHTML += `<div class='log success'>[+] Packet 1 sent to ${t}</div>`;
+                log.innerHTML += `<div class='log success'>[+] Packet 2 sent to ${t}</div>`;
+                log.scrollTop = log.scrollHeight;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

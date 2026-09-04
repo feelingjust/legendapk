@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>EBXU | TRACKER</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header><h1>IP<span>TRACK</span></h1></header>
+        <div class="card">
+            <div class="input-group">
+                <label>Target IP</label>
+                <input type="text" id="ip" placeholder="103.x.x.x">
+            </div>
+            <button class="btn" onclick="track()">LOCATE TARGET</button>
+        </div>
+        <div class="terminal" id="term">
+            <div class="log">[*] IP Geolocation Database Active.</div>
+        </div>
+        <a href="index.html" class="back-link">← BACK TO HUB</a>
+    </div>
+    <script>
+        function track() {
+            let ip = document.getElementById('ip').value;
+            let log = document.getElementById('term');
+            log.innerHTML += `<div class='log info'>[>] Fetching data for ${ip}...</div>`;
+            setTimeout(() => {
+                log.innerHTML += `<div class='log success'>[+] Location: Jakarta, Indonesia</div>`;
+                log.innerHTML += `<div class='log success'>[+] ISP: Telkom Indonesia</div>`;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
