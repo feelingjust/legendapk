@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>EBXU | DDOS PRO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header><h1>DDOS<span>PRO</span></h1></header>
+        <div class="card">
+            <div class="input-group">
+                <label>Target IP / Domain</label>
+                <input type="text" id="host" placeholder="1.1.1.1">
+            </div>
+            <div class="input-group">
+                <label>Method</label>
+                <select style="width:100%; padding:10px; background:#000; border:1px solid #333; color:white;">
+                    <option>UDP-MIX (High Power)</option>
+                    <option>TCP-SYN (Stealth)</option>
+                </select>
+            </div>
+            <button class="btn btn-danger" onclick="runAttack()">FIRE ATTACK</button>
+        </div>
+        <div class="terminal" id="term">
+            <div class="log">[*] UDP-Flood Module Loaded.</div>
+        </div>
+        <a href="index.html" class="back-link">← BACK TO HUB</a>
+    </div>
+    <script>
+        function runAttack() {
+            let h = document.getElementById('host').value;
+            let log = document.getElementById('term');
+            if(!h) return;
+            log.innerHTML += `<div class='log' style='color:red'>[!] ATTACK STARTED ON ${h}...</div>`;
+            setInterval(() => {
+                log.innerHTML += `<div class='log'>[${new Date().toLocaleTimeString()}] Sending 1490 bytes -> ${h}</div>`;
+                log.scrollTop = log.scrollHeight;
+            }, 500);
+        }
+    </script>
+</body>
+</html>

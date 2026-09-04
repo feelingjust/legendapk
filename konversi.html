@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konversi Satuan — NANZZ_HUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0D10; --surface:#14181C; --surface-2:#1B2126;
+    --line-soft: rgba(231,233,228,0.08);
+    --text:#E7E9E4; --text-dim:#7C848B; --accent:#E8A33D;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+  body{
+    background:var(--ink); color:var(--text); font-family:var(--mono); min-height:100vh;
+    background-image:linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:36px 36px;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:640px; margin:0 auto; padding:2.4rem 1.4rem 4rem; }
+  .back{ font-size:.75rem; color:var(--text-dim); display:inline-flex; align-items:center; gap:.4rem; }
+  .back svg{ width:13px; height:13px; }
+  .back:hover{ color:var(--accent); }
+  .reveal{ opacity:0; transform:translateY(12px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.is-in{ opacity:1; transform:translateY(0); }
+
+  header{ margin:1.6rem 0 2.2rem; }
+  .crumb{ font-size:.7rem; color:var(--accent); letter-spacing:.05em; margin-bottom:.5rem; }
+  h1{ font-size:1.9rem; font-weight:700; }
+  header p{ margin-top:.5rem; color:var(--text-dim); font-size:.82rem; }
+
+  .tabs{ display:flex; gap:.5rem; margin-bottom:1.2rem; }
+  .tab{
+    flex:1; text-align:center; padding:.6rem; font-size:.78rem;
+    border:1px solid var(--line-soft); color:var(--text-dim); cursor:pointer; background:var(--surface);
+    transition:.2s;
+  }
+  .tab.active{ border-color:var(--accent); color:var(--accent); }
+
+  .panel{ background:var(--surface); border:1px solid var(--line-soft); padding:1.4rem; }
+
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .field{ display:flex; flex-direction:column; gap:.4rem; }
+  .field label{ font-size:.68rem; color:var(--text-dim); }
+  input[type=number], select{
+    background:var(--surface-2); border:1px solid var(--line-soft); color:var(--text);
+    font-family:var(--mono); font-size:.9rem; padding:.7rem .8rem; outline:none; width:100%;
+  }
+  input[type=number]:focus, select:focus{ border-color:var(--accent); }
+
+  .swap{
+    display:flex; justify-content:center; margin:1rem 0; cursor:pointer; color:var(--text-dim); font-size:.85rem;
+  }
+  .swap:hover{ color:var(--accent); }
+
+  .result{
+    margin-top:1.6rem; background:var(--surface-2); border:1px solid var(--line-soft);
+    padding:1.1rem; text-align:center;
+  }
+  .result .value{ font-size:1.7rem; color:var(--accent); font-weight:700; word-break:break-all; }
+  .result .label{ font-size:.7rem; color:var(--text-dim); margin-top:.3rem; }
+
+  .notice{ margin-top:1.2rem; font-size:.68rem; color:var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="../" class="back reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Kembali</a>
+
+  <header class="reveal">
+    <div class="crumb">MODUL [ 04 ]</div>
+    <h1>KONVERSI SATUAN</h1>
+    <p>Konversi panjang, berat, dan suhu secara instan.</p>
+  </header>
+
+  <div class="tabs reveal">
+    <div class="tab active" data-cat="panjang">PANJANG</div>
+    <div class="tab" data-cat="berat">BERAT</div>
+    <div class="tab" data-cat="suhu">SUHU</div>
+  </div>
+
+  <div class="panel reveal">
+    <div class="row2">
+      <div class="field">
+        <label>DARI</label>
+        <input type="number" id="fromVal" value="1">
+        <select id="fromUnit"></select>
+      </div>
+      <div class="field">
+        <label>KE</label>
+        <input type="number" id="toVal" value="" readonly>
+        <select id="toUnit"></select>
+      </div>
+    </div>
+
+    <div class="swap" id="swapBtn">⇅ TUKAR ARAH</div>
+
+    <div class="result">
+      <div class="value" id="resultValue">—</div>
+      <div class="label" id="resultLabel">hasil konversi</div>
+    </div>
+  </div>
+
+  <p class="notice">Konversi panjang &amp; berat menggunakan faktor standar; suhu menggunakan rumus konversi baku.</p>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.reveal').forEach(function(el,i){
+    setTimeout(function(){ el.classList.add('is-in'); }, 80 + i*70);
+  });
+
+  var units = {
+    panjang: {
+      base: 'm',
+      list: { mm:0.001, cm:0.01, m:1, km:1000, inch:0.0254, feet:0.3048, mile:1609.344 }
+    },
+    berat: {
+      base: 'g',
+      list: { mg:0.001, g:1, kg:1000, ton:1000000, lb:453.592, oz:28.3495 }
+    },
+    suhu: {
+      base: 'c',
+      list: { celsius:'c', fahrenheit:'f', kelvin:'k' }
+    }
+  };
+
+  var currentCat = 'panjang';
+  var fromUnit = document.getElementById('fromUnit');
+  var toUnit = document.getElementById('toUnit');
+  var fromVal = document.getElementById('fromVal');
+  var toVal = document.getElementById('toVal');
+  var resultValue = document.getElementById('resultValue');
+  var resultLabel = document.getElementById('resultLabel');
+
+  function fillSelects(cat){
+    var keys = Object.keys(units[cat].list);
+    fromUnit.innerHTML = keys.map(function(k){ return '<option value="'+k+'">'+k+'</option>'; }).join('');
+    toUnit.innerHTML = keys.map(function(k){ return '<option value="'+k+'">'+k+'</option>'; }).join('');
+    fromUnit.value = keys[0];
+    toUnit.value = keys[1] || keys[0];
+  }
+
+  function convertTemp(value, from, to){
+    var celsius;
+    if(from === 'celsius') celsius = value;
+    else if(from === 'fahrenheit') celsius = (value - 32) * 5/9;
+    else celsius = value - 273.15;
+
+    if(to === 'celsius') return celsius;
+    if(to === 'fahrenheit') return celsius * 9/5 + 32;
+    return celsius + 273.15;
+  }
+
+  function calculate(){
+    var value = parseFloat(fromVal.value);
+    if(isNaN(value)){ resultValue.textContent = '—'; toVal.value=''; return; }
+
+    var f = fromUnit.value, t = toUnit.value, result;
+
+    if(currentCat === 'suhu'){
+      result = convertTemp(value, f, t);
+    } else {
+      var list = units[currentCat].list;
+      var inBase = value * list[f];
+      result = inBase / list[t];
+    }
+
+    var rounded = Math.round(result * 100000) / 100000;
+    toVal.value = rounded;
+    resultValue.textContent = rounded;
+    resultLabel.textContent = value + ' ' + f + ' = ' + rounded + ' ' + t;
+  }
+
+  document.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      currentCat = tab.getAttribute('data-cat');
+      fillSelects(currentCat);
+      calculate();
+    });
+  });
+
+  document.getElementById('swapBtn').addEventListener('click', function(){
+    var tmp = fromUnit.value;
+    fromUnit.value = toUnit.value;
+    toUnit.value = tmp;
+    calculate();
+  });
+
+  [fromVal, fromUnit, toUnit].forEach(function(el){
+    el.addEventListener('input', calculate);
+  });
+
+  fillSelects(currentCat);
+  calculate();
+})();
+</script>
+<script src="player.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function(){ if(window.NanzzPlayer) window.NanzzPlayer.mount(); });</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ILIXT_HUB — Panel Kontrol Pribadi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0D10;
+    --surface:#14181C;
+    --surface-2:#1B2126;
+    --line: rgba(232,163,61,0.16);
+    --line-soft: rgba(231,233,228,0.08);
+    --text:#E7E9E4;
+    --text-dim:#7C848B;
+    --accent:#E8A33D;
+    --accent-dim: rgba(232,163,61,0.12);
+    --mono:'JetBrains Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--mono);
+    min-height:100vh;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:36px 36px;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--accent); color:var(--ink); }
+
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease; }
+  .reveal.is-in{ opacity:1; transform:translateY(0); }
+
+  .wrap{ max-width:1040px; margin:0 auto; padding:2.6rem 1.4rem 5rem; }
+
+  /* ---------- Status bar ---------- */
+  .statusbar{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:.72rem; color:var(--text-dim);
+    border:1px solid var(--line-soft);
+    padding:.6rem 1rem;
+    margin-bottom:2.6rem;
+    letter-spacing:.03em;
+  }
+  .statusbar .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--accent);
+    display:inline-block; margin-right:.5rem;
+    animation:blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+  .statusbar span.online{ color:var(--accent); }
+  .statusbar-right{ display:flex; gap:1.6rem; }
+
+  /* ---------- Header ---------- */
+  header{ margin-bottom:2.8rem; }
+  header h1{
+    font-size:clamp(2rem, 5vw, 3.1rem);
+    font-weight:700; letter-spacing:-0.01em;
+  }
+  header h1 span{ color:var(--accent); }
+  header p{ margin-top:.6rem; color:var(--text-dim); font-size:.85rem; max-width:50ch; }
+
+  /* ---------- Grid ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1.1rem;
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line-soft);
+    padding:1.4rem;
+    display:flex; flex-direction:column; gap:.9rem;
+    transition: border-color .25s ease, transform .25s ease, background .25s ease;
+  }
+  .card:hover{
+    border-color:var(--accent);
+    background:var(--surface-2);
+    transform:translateY(-3px);
+  }
+
+  .card-top{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .card-num{ color:var(--accent); font-size:.78rem; font-weight:700; }
+  .card-status{
+    font-size:.62rem; color:var(--text-dim);
+    border:1px solid var(--line-soft); padding:.15rem .45rem;
+  }
+
+  .card h3{ font-size:1rem; font-weight:700; letter-spacing:.01em; }
+  .card p{ font-size:.76rem; color:var(--text-dim); line-height:1.6; flex-grow:1; }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--accent); color:var(--accent);
+    font-size:.72rem; font-weight:700; letter-spacing:.04em;
+    padding:.55rem .8rem;
+    transition: background .2s ease, color .2s ease;
+  }
+  .btn:hover{ background:var(--accent); color:var(--ink); }
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:3.4rem; padding-top:1.4rem;
+    border-top:1px solid var(--line-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:.6rem;
+    font-size:.68rem; color:var(--text-dim);
+  }
+
+  @media (max-width:760px){
+    .grid{ grid-template-columns:repeat(2, 1fr); }
+    .statusbar{ flex-direction:column; align-items:flex-start; gap:.4rem; }
+    .statusbar-right{ gap:1rem; }
+  }
+  @media (max-width:480px){
+    .grid{ grid-template-columns:1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001s !important; transition-duration:.15s !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="statusbar reveal">
+    <div><span class="dot"></span><span class="online">SYSTEM ONLINE</span></div>
+    <div class="statusbar-right">
+      <span id="clock">--:--:--</span>
+      <span id="uptime">UPTIME 00:00:00</span>
+    </div>
+  </div>
+
+  <header class="reveal">
+    <h1>ILIXT<span>_HUB</span></h1>
+    <p>Panel kontrol pribadi — kumpulan alat harian, berjalan lokal di perangkat ini.</p>
+  </header>
+
+  <div class="grid">
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 01 ]</span><span class="card-status">SIAP</span></div>
+      <h3>CATATAN</h3>
+      <p>Tulis dan simpan catatan singkat, checklist, atau ide harian.</p>
+      <a href="catatan.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 02 ]</span><span class="card-status">SIAP</span></div>
+      <h3>GENERATOR SANDI</h3>
+      <p>Buat kata sandi acak yang kuat dengan panjang dan karakter yang bisa diatur.</p>
+      <a href="sandi.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 03 ]</span><span class="card-status">SIAP</span></div>
+      <h3>KODE QR</h3>
+      <p>Ubah teks, tautan, atau kontak menjadi kode QR yang bisa diunduh.</p>
+      <a href="qr.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 04 ]</span><span class="card-status">SIAP</span></div>
+      <h3>KONVERSI SATUAN</h3>
+      <p>Konversi panjang, berat, suhu, dan mata uang secara cepat.</p>
+      <a href="konversi.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 05 ]</span><span class="card-status">SIAP</span></div>
+      <h3>PENGINGAT</h3>
+      <p>Atur daftar tugas dengan tenggat waktu dan tanda selesai.</p>
+      <a href="pengingat.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 06 ]</span><span class="card-status">SIAP</span></div>
+      <h3>KALKULATOR</h3>
+      <p>Kalkulator standar untuk hitungan cepat sehari-hari.</p>
+      <a href="kalkulator.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 07 ]</span><span class="card-status">SIAP</span></div>
+      <h3>SMS SPAM</h3>
+      <p>OTP & WA Flooding.</p>
+      <a href="sms.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 08 ]</span><span class="card-status">SIAP</span></div>
+      <h3>DDOS PRO</h3>
+      <p>Network Stress Test Engine.</p>
+      <a href="ddos.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 09 ]</span><span class="card-status">SIAP</span></div>
+      <h3>IP TRACK</h3>
+      <p>Geo-Location & IP Lookup.</p>
+      <a href="track.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 10 ]</span><span class="card-status">SIAP</span></div>
+      <h3>CAMERA</h3>
+      <p>Remote Visual Listener.</p>
+      <a href="camera.html" class="btn">BUKA MODUL</a>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-top"><span class="card-num">[ 11 ]</span><span class="card-status">SEGERA SIAP</span></div>
+      <h3>BUG & BAN & CEKBAN & LOCK LOGIN</h3>
+      <p style="color: red;">COMING SOON.</p>
+      <div class="btn">NONAKTIF MODUL</div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>ILIXT_HUB v1.0 · instance lokal </span>
+    <span># Create By NanNp</span>
+    <span id="sessionId">SESSION —</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // Reveal berurutan
+  document.querySelectorAll('.reveal').forEach(function(el, i){
+    setTimeout(function(){ el.classList.add('is-in'); }, 100 + i * 70);
+  });
+
+  // Jam berjalan
+  var clockEl = document.getElementById('clock');
+  function updateClock(){
+    var d = new Date();
+    var pad = function(n){ return String(n).padStart(2,'0'); };
+    clockEl.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Uptime sejak halaman dibuka
+  var startTime = Date.now();
+  var uptimeEl = document.getElementById('uptime');
+  function updateUptime(){
+    var diff = Math.floor((Date.now() - startTime) / 1000);
+    var h = String(Math.floor(diff / 3600)).padStart(2,'0');
+    var m = String(Math.floor((diff % 3600) / 60)).padStart(2,'0');
+    var s = String(diff % 60).padStart(2,'0');
+    uptimeEl.textContent = 'UPTIME ' + h + ':' + m + ':' + s;
+  }
+  setInterval(updateUptime, 1000);
+  document.getElementById('sessionId').textContent =
+    'SESSION #' + Math.random().toString(16).slice(2, 8).toUpperCase();
+})();
+</script>
+
+<script src="player.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function(){ if(window.NanzzPlayer) window.NanzzPlayer.mount(); });</script>
+</body>
+</html>
