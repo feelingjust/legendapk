@@ -14,7 +14,7 @@
     --text:#E7E9E4; --text-dim:#7C848B; --accent:#E8A33D;
     --mono:'JetBrains Mono', monospace;
   }
-  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
   body{
     background:var(--ink); color:var(--text); font-family:var(--mono); min-height:100vh;
     background-image:linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
@@ -78,6 +78,7 @@
 
   .empty{ color:var(--text-dim); font-size:.8rem; text-align:center; padding:2rem 0; }
   .notice{ margin-top:1.2rem; font-size:.68rem; color:var(--text-dim); }
+  .notice.warn{ color:#E8683D; }
 
   @media (max-width:520px){
     .addrow{ flex-wrap:wrap; }
@@ -110,7 +111,7 @@
     <div class="list" id="list"></div>
   </div>
 
-  <p class="notice">Daftar tugas disimpan sementara di memori halaman ini dan akan hilang saat dimuat ulang.</p>
+  <p class="notice" id="storageNotice">Daftar tugas disimpan di browser ini (localStorage) dan tetap ada saat halaman dimuat ulang.</p>
 </div>
 
 <script>
@@ -119,16 +120,53 @@
     setTimeout(function(){ el.classList.add('is-in'); }, 80 + i*70);
   });
 
+  var STORAGE_KEY = 'nanzz_hub_tasks';
   var tasks = [];
   var filter = 'semua';
   var listEl = document.getElementById('list');
   var taskInput = document.getElementById('taskInput');
   var dueInput = document.getElementById('dueInput');
+  var storageNotice = document.getElementById('storageNotice');
+  var storageAvailable = (function(){
+    try{
+      var testKey = '__test__';
+      window.localStorage.setItem(testKey, '1');
+      window.localStorage.removeItem(testKey);
+      return true;
+    } catch(err){
+      return false;
+    }
+  })();
+
+  if(!storageAvailable){
+    storageNotice.textContent = 'Penyimpanan browser tidak tersedia — daftar tugas hanya bertahan selama tab ini terbuka.';
+    storageNotice.classList.add('warn');
+  }
 
   function escapeHtml(str){
     var d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
+  }
+
+  function loadTasks(){
+    if(!storageAvailable) return;
+    try{
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      tasks = raw ? JSON.parse(raw) : [];
+    } catch(err){
+      tasks = [];
+    }
+  }
+
+  function saveTasks(){
+    if(!storageAvailable) return;
+    try{
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    } catch(err){
+      storageNotice.textContent = 'Gagal menyimpan tugas. Perubahan mungkin tidak tersimpan.';
+      storageNotice.classList.add('warn');
+    }
   }
 
   function render(){
@@ -163,6 +201,7 @@
     taskInput.value = '';
     dueInput.value = '';
     render();
+    saveTasks();
   });
 
   taskInput.addEventListener('keydown', function(e){
@@ -173,10 +212,12 @@
     if(e.target.matches('input[type=checkbox]')){
       tasks[parseInt(e.target.getAttribute('data-i'),10)].done = e.target.checked;
       render();
+      saveTasks();
     }
     if(e.target.classList.contains('del')){
       tasks.splice(parseInt(e.target.getAttribute('data-i'),10), 1);
       render();
+      saveTasks();
     }
   });
 
@@ -189,6 +230,7 @@
     });
   });
 
+  loadTasks();
   render();
 })();
 </script>
