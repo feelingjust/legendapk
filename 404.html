@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none; /* Mencegah menu context pada iOS */
+            -webkit-user-select: none; /* Mencegah seleksi teks Safari */
+            -khtml-user-select: none; /* Mencegah seleksi teks Konqueror */
+            -moz-user-select: none; /* Mencegah seleksi teks Firefox */
+            -ms-user-select: none; /* Mencegah seleksi teks Internet Explorer/Edge */
+            user-select: none; /* Mencegah seleksi teks non-prefixed */
+        }
+
+        html, body {
+            overflow: hidden; /* Mencegah scrolling */
+            height: 100%; /* Memastikan tinggi selalu penuh */
+            width: 100%; /* Memastikan lebar selalu penuh */
+            position: fixed; /* Mencegah scrolling pada mobile */
+            touch-action: none; /* Mencegah panning/zooming di mobile */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f1a;
+            color: #e4e4e4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #111133 0%, #000011 100%);
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: rgba(25, 26, 36, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            max-width: 90%;
+            width: 600px;
+            position: relative;
+            z-index: 10;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            animation: float 6s ease-in-out infinite;
+            border: 1px solid rgba(83, 92, 236, 0.3);
+        }
+
+        .error-number {
+            font-size: 8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #5f27cd, #48dbfb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            position: relative;
+            text-shadow: 0px 5px 15px rgba(95, 39, 205, 0.4);
+            animation: glow 2s infinite;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #e4e4e4;
+            text-shadow: 0 0 10px rgba(72, 219, 251, 0.3);
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #b8b8b8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #5f27cd, #48dbfb);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(95, 39, 205, 0.4);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent; /* Menghilangkan highlight saat tap di mobile */
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(72, 219, 251, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0);
+            }
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 15px rgba(72, 219, 251, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(95, 39, 205, 0.8), 0 0 40px rgba(72, 219, 251, 0.4);
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .astronaut {
+            position: absolute;
+            width: 120px;
+            height: 160px;
+            top: 40%;
+            animation: astronaut 12s infinite linear;
+            z-index: 1;
+            transform: scale(0);
+            opacity: 0;
+            filter: drop-shadow(0 0 10px rgba(72, 219, 251, 0.5));
+        }
+
+        .astronaut-body {
+            width: 60px;
+            height: 80px;
+            background-color: #2d2d3d;
+            border-radius: 40px 40px 0 0;
+            position: relative;
+            border: 2px solid #48dbfb;
+        }
+
+        .astronaut-head {
+            width: 50px;
+            height: 50px;
+            background-color: #2d2d3d;
+            border-radius: 50%;
+            position: absolute;
+            top: -30px;
+            left: 5px;
+            border: 2px solid #48dbfb;
+        }
+
+        .astronaut-window {
+            width: 30px;
+            height: 15px;
+            background-color: #48dbfb;
+            border-radius: 10px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            box-shadow: 0 0 10px #48dbfb;
+        }
+
+        .astronaut-arm {
+            width: 20px;
+            height: 45px;
+            background-color: #2d2d3d;
+            position: absolute;
+            border-radius: 10px;
+            border: 2px solid #48dbfb;
+        }
+
+        .astronaut-arm.left {
+            left: -15px;
+            top: 15px;
+            transform: rotate(20deg);
+            animation: wave 2s infinite;
+            transform-origin: top center;
+        }
+
+        .astronaut-arm.right {
+            right: -15px;
+            top: 15px;
+            transform: rotate(-20deg);
+        }
+
+        .astronaut-leg {
+            width: 20px;
+            height: 40px;
+            background-color: #2d2d3d;
+            position: absolute;
+            bottom: -30px;
+            border-radius: 10px;
+            border: 2px solid #48dbfb;
+        }
+
+        .astronaut-leg.left {
+            left: 10px;
+        }
+
+        .astronaut-leg.right {
+            right: 10px;
+        }
+
+        @keyframes astronaut {
+            0% {
+                left: -120px;
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                transform: scale(1) rotate(30deg);
+                opacity: 1;
+            }
+            90% {
+                transform: scale(1) rotate(-30deg);
+                opacity: 1;
+            }
+            100% {
+                left: calc(100% + 120px);
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: rotate(20deg);
+            }
+            50% {
+                transform: rotate(60deg);
+            }
+        }
+
+        /* Efek meteor */
+        .meteor {
+            position: absolute;
+            background: linear-gradient(45deg, #5f27cd, transparent);
+            border-radius: 50% 0 0 50%;
+            height: 2px;
+            animation: meteor var(--meteor-duration) linear infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes meteor {
+            0% {
+                opacity: 0;
+                transform: rotate(215deg) translateX(-100px);
+                height: 2px;
+            }
+            10% {
+                opacity: 1;
+            }
+            80% {
+                height: 2px;
+            }
+            100% {
+                opacity: 0;
+                transform: rotate(215deg) translateX(calc(100vw + 100px));
+                height: 100px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="astronaut" id="astronaut">
+        <div class="astronaut-body">
+            <div class="astronaut-head">
+                <div class="astronaut-window"></div>
+            </div>
+            <div class="astronaut-arm left"></div>
+            <div class="astronaut-arm right"></div>
+            <div class="astronaut-leg left"></div>
+            <div class="astronaut-leg right"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="error-number">404</div>
+        <h1>Oops! Halaman Tidak Ditemukan</h1>
+        <p>Sepertinya Anda telah menemukan portal ke dimensi lain. Sayangnya, halaman yang Anda cari tidak ada di dimensi ini.</p>
+        <button class="btn" onclick="window.location.href='/'">Kembali ke Beranda</button>
+    </div>
+
+    <script>
+        // Membuat bintang-bintang di latar belakang
+        const starsContainer = document.getElementById('stars');
+        const numStars = 150;
+        
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            
+            // Posisi acak
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            // Ukuran acak
+            const size = Math.random() * 3 + 1;
+            
+            // Durasi kedipan acak
+            const duration = Math.random() * 3 + 2;
+            
+            // Delay acak
+            const delay = Math.random() * 5;
+            
+            star.style.cssText = `
+                left: ${x}%;
+                top: ${y}%;
+                width: ${size}px;
+                height: ${size}px;
+                --duration: ${duration}s;
+                animation-delay: ${delay}s;
+            `;
+            
+            starsContainer.appendChild(star);
+        }
+
+        // Menambahkan meteor
+        function createMeteor() {
+            const meteor = document.createElement('div');
+            meteor.classList.add('meteor');
+            
+            const y = Math.random() * 70; // Posisi y dalam viewport
+            const width = Math.random() * 200 + 100; // Panjang meteor
+            const duration = Math.random() * 2 + 1; // Durasi animasi
+            
+            meteor.style.cssText = `
+                top: ${y}%;
+                width: ${width}px;
+                --meteor-duration: ${duration}s;
+            `;
+            
+            document.body.appendChild(meteor);
+            
+            // Hapus meteor setelah animasi selesai
+            setTimeout(() => {
+                meteor.remove();
+            }, duration * 1000);
+        }
+        
+        // Membuat meteor secara berkala
+        setInterval(createMeteor, 3000);
+
+        // Animasi astronot
+        setTimeout(() => {
+            const astronaut = document.getElementById('astronaut');
+            astronaut.style.opacity = '1';
+        }, 1000);
+
+        // Efek hover pada container
+        const container = document.querySelector('.container');
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            const moveX = (x - windowWidth / 2) / 25;
+            const moveY = (y - windowHeight / 2) / 25;
+            
+            container.style.transform = `translate3d(0, ${-moveY}px, 0) rotateX(${moveY}deg) rotateY(${-moveX}deg)`;
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            container.style.transform = '';
+            container.style.animation = 'float 6s ease-in-out infinite';
+        });
+
+        // Efek interaktif pada tombol 404
+        const errorNumber = document.querySelector('.error-number');
+        
+        errorNumber.addEventListener('mouseover', () => {
+            errorNumber.style.animation = 'none';
+            errorNumber.style.transform = 'scale(1.1)';
+            errorNumber.style.textShadow = '0 0 30px rgba(72, 219, 251, 0.9), 0 0 60px rgba(95, 39, 205, 0.6)';
+        });
+        
+        errorNumber.addEventListener('mouseleave', () => {
+            errorNumber.style.animation = 'glow 2s infinite';
+            errorNumber.style.transform = 'scale(1)';
+            errorNumber.style.textShadow = '';
+        });
+
+        // Mencegah scrolling dan gesture lainnya
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Mencegah context menu saat klik kanan atau tap lama
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Mencegah tekan lama (long press)
+        document.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Mencegah pinch zoom
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        // Mencegah scroll dengan keyboard
+        window.addEventListener('keydown', function(e) {
+            // Space, Page Up, Page Down, End, Home, arrow keys
+            if([32, 33, 34, 35, 36, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                e.preventDefault();
+            }
+        }, false);
+    </script>
+</body>
+</html>
